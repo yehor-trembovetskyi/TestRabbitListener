@@ -1,0 +1,39 @@
+spring:
+  profiles:
+    active: normal
+  application:
+    name: TestRabbitListenerApplication
+  rabbitmq:
+    port: 5672
+    host: localhost
+    virtual-host: platform
+    username: platform_service
+    password: 00wcvGF2hZynVBiAvhkazBXiccjnAhKMVXvZh84ftEMODbpJG4
+  cloud:
+    stream:
+      function:
+        definition: >
+          handleMessageEvent;
+          handleErrorEvent
+      binders:
+        rabbit:
+          type: rabbit
+      bindings:
+        handleMessageEvent-in-0:
+          binder: rabbit
+          destination: greeting.messages
+          group: humans
+        handleErrorEvent-in-0:
+          binder: rabbit
+          destination: alert.messages
+          group: computers
+      rabbit:
+        bindings:
+          handleMessageEvent-in-0:
+            consumer:
+              bind-queue: true
+              binding-routing-key: say.english
+          handleErrorEvent-in-0:
+            consumer:
+              bind-queue: true
+              binding-routing-key: say.binary
